@@ -1,27 +1,23 @@
 import "./App.css";
-import React, { useState } from "react";
+import { useState } from "react";
 import ButtonWithInput from "./components/ButtonWithInput.tsx";
 import Button from "./components/Button.tsx";
 import Count from "./components/Count.tsx";
-import {nanoid} from "nanoid";
+import ListUser from "./components/ListUser.tsx";
 
 const list = [
-  { id : 1, name: "Alice" },
-  { id : 2, name: "Alex" },
-  { id : 3, name: "Robert" },
-  { id : 4, name: "Many" },
-  { id : 5, name: "Wero" },
-]
+  { id: 1, name: "Alice" },
+  { id: 2, name: "Alex" },
+  { id: 3, name: "Robert" },
+  { id: 4, name: "Many" },
+  { id: 5, name: "Viktor" },
+];
 
 const App = () => {
   const [count, setCount] = useState(0);
 
-  const sumCountAndInputValue = (valueFromInput: number) => {
+  const valueFromInput = (valueFromInput: number) => {
     setCount(count + valueFromInput);
-  };
-
-  const plusCount = () => {
-    setCount(count + 1);
   };
 
   const minusCount = () => {
@@ -34,28 +30,25 @@ const App = () => {
 
   return (
     <div>
-      <ButtonWithInput valueFromInput={sumCountAndInputValue} />
+      <ButtonWithInput valueFromInput={valueFromInput} />
       <Count count={count} />
-      <Button text={"+1"} setFunction={plusCount} />
+      <Button text={"+1"} setFunction={valueFromInput} />
       <Button text={"-1"} setFunction={minusCount} />
-
-      {list.map(({name, id}) => (
-        <div key={id}>{name}</div>
-      ))}
-      <Button text={'add user'}/>
+      <ListUser ListUserProps={list} />
     </div>
   );
 };
 
 export default App;
 
-// Моя задача сделать этот инпут контролируемым из инпута по нажатию кнопки получаю value и + к count через button,
-// вынести инпут + баттон в один компонент и соотв. сделать интерфейс, если я буду добавлять слова, то на экране должна появиться
-// надпись под компонентами "невалидное число", в любом изменении инпута надпись "невалидное число" должна пропасть
-// */
+//Task list
+/*
+Моя задача сделать этот инпут контролируемым из инпута по нажатию кнопки получаю value и + к count через button,
+вынести инпут + баттон в один компонент и соотв. сделать интерфейс, если я буду добавлять слова, то на экране должна появиться
+надпись под компонентами "невалидное число", в любом изменении инпута надпись "невалидное число" должна пропасть
+*/
 
 /*
 Компонент списка вынести в отдельный компонент, сам список передавать пропсом
-добавляется пользователь с рандомным id и рандомное имя через nanoid
-
+добавляется пользователя через кнопку с рандомным id и рандомное имя через nanoid
 */
