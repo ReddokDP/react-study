@@ -1,11 +1,11 @@
 import { useState, ChangeEvent } from "react";
-import Button from "./Button.tsx";
+import { Button } from "./Button.tsx";
 
 interface ButtonWithInputProps {
   valueFromInput: (value: number) => void;
 }
 
-const ButtonWithInput = ({ valueFromInput }: ButtonWithInputProps) => {
+export const CounterInput = ({ valueFromInput }: ButtonWithInputProps) => {
   const [inputValue, setInputValue] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -15,12 +15,11 @@ const ButtonWithInput = ({ valueFromInput }: ButtonWithInputProps) => {
   };
 
   const getValueFromInput = () => {
-    if (isNaN(+inputValue)) {
+    if (isNaN(Number(inputValue))) {
       setError("Невалидное число");
-      console.log(error);
-    } else {
-      valueFromInput(+inputValue);
+      return;
     }
+    valueFromInput(Number(inputValue));
   };
 
   return (
@@ -31,10 +30,8 @@ const ButtonWithInput = ({ valueFromInput }: ButtonWithInputProps) => {
         onChange={setValueInput}
         placeholder="Введите число"
       />
-      <Button text={"Add"} setFunction={getValueFromInput} />
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      <Button children="Add" handleClick={getValueFromInput} />
+      {error && <p className="error-novalid">{error}</p>}
     </div>
   );
 };
-
-export default ButtonWithInput;

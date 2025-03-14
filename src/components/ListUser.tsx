@@ -1,35 +1,33 @@
 import { useState } from "react";
-import Button from "./Button";
+import { Button } from "./Button";
 import { nanoid, customAlphabet } from "nanoid";
 
-interface UserProps {
+interface User {
   id: number;
   name: string;
 }
 
 interface ListUserProps {
-  ListUserProps: UserProps[];
+  listUserFromApp: User[];
 }
 
-const ListUser = ({ ListUserProps }: ListUserProps) => {
-  const [user, setUser] = useState(ListUserProps);
+export const ListUser = ({ listUserFromApp }: ListUserProps) => {
+  const [users, setUsers] = useState(listUserFromApp);
 
-  const nanoidDigits = customAlphabet('0123456789', 10);
+  const nanoidDigits = customAlphabet("0123456789", 10);
 
   function addUserInList() {
     const idUser = nanoidDigits();
     const nameUser = nanoid(4);
-    setUser([...user, { id: +idUser, name: nameUser }]);
+    setUsers([...users, { id: Number(idUser), name: nameUser }]);
   }
 
   return (
     <div>
-      {user.map(({ name, id }) => (
+      {users.map(({ name, id }) => (
         <div key={id}>{name}</div>
       ))}
-      <Button text={"addUser"} setFunction={addUserInList} />
+      <Button handleClick={addUserInList}>addUser</Button>
     </div>
   );
 };
-
-export default ListUser;

@@ -1,54 +1,40 @@
 import "./App.css";
-import { useState } from "react";
-import ButtonWithInput from "./components/ButtonWithInput.tsx";
-import Button from "./components/Button.tsx";
-import Count from "./components/Count.tsx";
-import ListUser from "./components/ListUser.tsx";
+import { Post } from "./components/Post/Post.tsx";
+import { useFetch } from "./components/useFetch.ts";
 
-const list = [
-  { id: 1, name: "Alice" },
-  { id: 2, name: "Alex" },
-  { id: 3, name: "Robert" },
-  { id: 4, name: "Many" },
-  { id: 5, name: "Viktor" },
-];
+const postsUrl =
+    "https://jsonplaceholder.typicode.com/posts?_start=10&_limit=10";
 
-const App = () => {
-  const [count, setCount] = useState(0);
+interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+}
 
-  const valueFromInput = (valueFromInput: number) => {
-    setCount(count + valueFromInput);
-  };
+export const App = () => {
+  const { posts, isLoading, error } = useFetch(postsUrl);
 
-  const minusCount = () => {
-    if (count <= 0) {
-      setCount(0);
-    } else {
-      setCount(count - 1);
-    }
-  };
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>
+  }
 
   return (
-    <div>
-      <ButtonWithInput valueFromInput={valueFromInput} />
-      <Count count={count} />
-      <Button text={"+1"} setFunction={valueFromInput} />
-      <Button text={"-1"} setFunction={minusCount} />
-      <ListUser ListUserProps={list} />
+    <div className="post-container">
+      {posts.map(({ title, body, id }: Post) => (
+        <Post body={body} title={title} key={id} />
+      ))}
     </div>
   );
 };
 
-export default App;
-
-//Task list
-/*
-Моя задача сделать этот инпут контролируемым из инпута по нажатию кнопки получаю value и + к count через button,
-вынести инпут + баттон в один компонент и соотв. сделать интерфейс, если я буду добавлять слова, то на экране должна появиться
-надпись под компонентами "невалидное число", в любом изменении инпута надпись "невалидное число" должна пропасть
-*/
 
 /*
-Компонент списка вынести в отдельный компонент, сам список передавать пропсом
-добавляется пользователя через кнопку с рандомным id и рандомное имя через nanoid
-*/
+
+
+
+ */
