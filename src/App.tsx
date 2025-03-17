@@ -1,61 +1,45 @@
 import "./App.css";
-import React, { useState } from "react";
-import ButtonWithInput from "./components/ButtonWithInput.tsx";
-import Button from "./components/Button.tsx";
-import Count from "./components/Count.tsx";
-import {nanoid} from "nanoid";
+import { Post } from "./components/Post/Post.tsx";
+import { useFetch } from "./components/useFetch.ts";
 
-const list = [
-  { id : 1, name: "Alice" },
-  { id : 2, name: "Alex" },
-  { id : 3, name: "Robert" },
-  { id : 4, name: "Many" },
-  { id : 5, name: "Wero" },
-]
+const postsUrl =
+  "https://jsonplaceholder.typicode.com/posts?_start=10&_limit=10";
 
-const App = () => {
-  const [count, setCount] = useState(0);
+const postsArrayUrl = [
+  "https://jsonplaceholder.typicode.com/posts?_start=10&_limit=10",
+  "https://jsonplaceholder.typicode.com/posts?_start=20&_limit=10",
+  "https://jsonplaceholder.typicode.com/posts?_start=30&_limit=10",
+];
 
-  const sumCountAndInputValue = (valueFromInput: number) => {
-    setCount(count + valueFromInput);
-  };
+interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+}
 
-  const plusCount = () => {
-    setCount(count + 1);
-  };
+export const App = () => {
+  const { data: posts, isLoading, error } = useFetch<Post>(postsArrayUrl);
 
-  const minusCount = () => {
-    if (count <= 0) {
-      setCount(0);
-    } else {
-      setCount(count - 1);
-    }
-  };
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
-    <div>
-      <ButtonWithInput valueFromInput={sumCountAndInputValue} />
-      <Count count={count} />
-      <Button text={"+1"} setFunction={plusCount} />
-      <Button text={"-1"} setFunction={minusCount} />
-
-      {list.map(({name, id}) => (
-        <div key={id}>{name}</div>
+    <div className="post-container">
+      {posts?.map(({ title, body, id }: Post) => (
+        <Post body={body} title={title} key={id} />
       ))}
-      <Button text={'add user'}/>
     </div>
   );
 };
 
-export default App;
-
-// Моя задача сделать этот инпут контролируемым из инпута по нажатию кнопки получаю value и + к count через button,
-// вынести инпут + баттон в один компонент и соотв. сделать интерфейс, если я буду добавлять слова, то на экране должна появиться
-// надпись под компонентами "невалидное число", в любом изменении инпута надпись "невалидное число" должна пропасть
-// */
-
 /*
-Компонент списка вынести в отдельный компонент, сам список передавать пропсом
-добавляется пользователь с рандомным id и рандомное имя через nanoid
-
-*/
+Нужно дописать useFetch таким образом, чтобы он мог принимать url в виде строки или в виде массива строк.
+Если URL это массив строк, то кидаем запрос через Promise.all на все сразу, возвращаться должен одинаковый контракт всегда - объект, где есть поля: data, isLoading, error
+Task* типизировать useFetch, когда он возвращает data надо понять что он возвращает через дженерики
+ */

@@ -1,10 +1,15 @@
-interface ButtonProps {
-    setFunction: () => void;
-    text: string;
+import { ButtonHTMLAttributes } from "react";
+
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  handleClick: (arg: number) => void;
 }
-
-const Button = ({ setFunction, text }: ButtonProps) => {
-    return <button onClick={setFunction}>{text}</button>;
+export const Button = ({ children, handleClick, ...rest }: ButtonProps) => {
+  const handleButtonClick = () => {
+    handleClick(1);
+  };
+  return (
+    <button onClick={handleButtonClick} {...rest}>
+      {children}
+    </button>
+  );
 };
-
-export default Button;
