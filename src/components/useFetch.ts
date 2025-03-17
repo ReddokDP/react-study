@@ -1,19 +1,32 @@
 import { useEffect, useState } from "react";
 
-export const useFetch = (url: string) => {
-  const [posts, setPosts] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+interface FetchState<T> {
+  data: T | null;
+  isLoading: boolean;
+  error: string | null;
+}
+
+export const useFetch = <T>(url: string | string[]): FetchState<T[]> => {
+  const [data, setData] = useState<T[] | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const fetchSingleUrl = async (singleUrl: string): Promise<T> => {
+      const response = await fetch(singleUrl);
+      return response.json();
+    };
+
     (async () => {
       try {
-        setIsLoading(true);
-        const response = await fetch(url);
-        const data = await response.json();
-        setPosts(data);
+        if (Array.isArray(url)) {
+          const responseArray = await Promise.all(url.map(fetchSingleUrl));
+          setData(responseArray.flat() as T[]);
+        } else {
+          const singleUrlData  = await fetchSingleUrl(url);
+          setData(Array.isArray(singleUrlData) ? [...singleUrlData] : [singleUrlData]);
+        }
       } catch (error) {
-        console.log(error);
         setError("Произошла ошибка!");
       } finally {
         setIsLoading(false);
@@ -21,5 +34,5 @@ export const useFetch = (url: string) => {
     })();
   }, [url]);
 
-  return { posts, isLoading, error };
+  return { data, isLoading, error };
 };
